@@ -1,6 +1,6 @@
-import React from 'react';
-import '../styles/tailwind.output.css';
-import { DaylightBackground } from '../uicomponents/DaylightBackground'
+import React from "react"
+import "../styles/tailwind.output.css"
+import { DaylightBackground } from "../uicomponents/DaylightBackground"
 
 function App() {
   return (
@@ -9,7 +9,7 @@ function App() {
         <div className="rounded shadow bg-pale max-w-xs">coucou</div>
       </DaylightBackground>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
