@@ -1,11 +1,14 @@
 import React from "react"
-import "../styles/tailwind.output.css"
+import "../assets/styles/tailwind.output.css"
+import { Header } from "../uicomponents/Header"
 import { Session } from "./Session"
 
-const App: React.FunctionComponent<null> = () => {
+const App: React.FunctionComponent<{}> = () => {
   return (
     <div className="h-screen w-full flex bg-blue">
-      <Session></Session>
+      <Session>
+        <Header />
+      </Session>
     </div>
   )
 }

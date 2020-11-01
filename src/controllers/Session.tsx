@@ -23,6 +23,7 @@ export class Session extends Component<{}, SessionState> {
     this.timer = setInterval(
       () =>
         this.setState((prevState) => {
+          console.log("next timer", prevState.timer + 1000)
           return { timer: prevState.timer + 1000 }
         }),
       1000
