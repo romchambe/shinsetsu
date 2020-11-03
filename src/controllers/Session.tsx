@@ -11,7 +11,7 @@ export class Session extends Component<{}, SessionState> {
   timer: null | NodeJS.Timeout = null
   constructor(props: {}) {
     super(props)
-    this.state = { active: true, timer: 0, duration: 180000 }
+    this.state = { active: true, timer: 0, duration: 30000 }
   }
 
   componentDidMount(): void {

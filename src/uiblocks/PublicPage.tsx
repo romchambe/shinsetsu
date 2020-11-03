@@ -8,10 +8,7 @@ export const PublicPage: React.FunctionComponent = () => {
   const session = useContext(SessionContext)
 
   return (
-    <DaylightBackground
-      timeToEnd={session.duration - session.timer}
-      duration={session.duration}
-    >
+    <DaylightBackground>
       <Header />
       <div className="flex w-full justify-center">
         <Timer value={session.timer} />

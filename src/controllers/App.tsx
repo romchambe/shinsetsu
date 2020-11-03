@@ -5,7 +5,7 @@ import { Session } from "./Session"
 
 const App: React.FunctionComponent<{}> = () => {
   return (
-    <div className="h-screen w-full flex bg-blue">
+    <div className="h-screen w-full flex">
       <Session>
         <PublicPage />
       </Session>
