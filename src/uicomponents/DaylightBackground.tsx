@@ -2,6 +2,9 @@ import React, { useContext } from "react"
 import { useSpring, animated } from "react-spring"
 import { SessionContext } from "../contexts/SessionContext"
 
+const entryThreshold = 0.2,
+  exitThreshold = 0.8
+
 export const DaylightBackground: React.FunctionComponent<{}> = (props) => {
   const { active, timer, duration } = useContext(SessionContext)
 
@@ -12,13 +15,15 @@ export const DaylightBackground: React.FunctionComponent<{}> = (props) => {
 
   setProgress({ progress: timer / duration })
 
-  const color = useSpring({
-    from: { backgroundColor: "#ff9696" },
-    to: { backgroundColor: "#ffdaa7" },
-    config: { duration: 0.125 * duration },
+  const backgroundColor = progress.interpolate({
+    range: [0, entryThreshold, exitThreshold, 1],
+    output: ["#ff9696", "#ffdaa7", "#ffdaa7", "#b09afe"],
   })
 
-  console.log(color)
+  const gradientColor = progress.interpolate({
+    range: [0, entryThreshold, exitThreshold, 1],
+    output: ["#ffe6e6", "#fff6ea", "#fff6ea", "#efebfa"],
+  })
 
   const transform = progress.interpolate(
     (prog) =>
@@ -30,11 +35,8 @@ export const DaylightBackground: React.FunctionComponent<{}> = (props) => {
   const gradient = {
     background: `linear-gradient(${
       270 - 180 * progress.getValue()
-    }deg, ${getGradientColor(progress.getValue())}, transparent)`,
+    }deg, ${gradientColor.getValue()}, transparent)`,
   }
-
-  //rgb(255,246,234)
-  //rgb(255,230,230)
 
   return (
     <div className="h-full w-full" style={gradient}>
@@ -43,9 +45,9 @@ export const DaylightBackground: React.FunctionComponent<{}> = (props) => {
           className={`absolute rounded-2xl w-8 h-8`}
           style={{
             right: -32,
-            top: 24,
+            top: 32,
             transform,
-            ...color,
+            backgroundColor,
           }}
         ></animated.div>
       ) : null}
@@ -53,55 +55,4 @@ export const DaylightBackground: React.FunctionComponent<{}> = (props) => {
       {props.children}
     </div>
   )
-}
-
-function getGradientColor(progress: number) {
-  const entryThreshold = 0.125,
-    exitThreshold = 0.875
-  let red = 255,
-    green = 246,
-    blue = 234
-  let advance
-
-  if (progress <= entryThreshold) {
-    advance = progress / entryThreshold
-    const transform = {
-      red: [255, 255],
-      green: [230, 246],
-      blue: [230, 234],
-    }
-
-    red = Math.round(
-      transform.red[0] + advance * (transform.red[1] - transform.red[0])
-    )
-    green = Math.round(
-      transform.green[0] +
-        advance * (transform.green[1] - transform.green[0])
-    )
-    blue = Math.round(
-      transform.blue[0] + advance * (transform.blue[1] - transform.blue[0])
-    )
-  }
-  if (progress >= exitThreshold) {
-    advance = progress - entryThreshold / (1 - entryThreshold)
-
-    const transform = {
-      red: [255, 239],
-      green: [246, 235],
-      blue: [234, 250],
-    }
-
-    red = Math.round(
-      transform.red[0] + advance * (transform.red[1] - transform.red[0])
-    )
-    green = Math.round(
-      transform.green[0] +
-        advance * (transform.green[1] - transform.green[0])
-    )
-    blue = Math.round(
-      transform.blue[0] + advance * (transform.blue[1] - transform.blue[0])
-    )
-  }
-
-  return `rgb(${red},${green},${blue})`
 }

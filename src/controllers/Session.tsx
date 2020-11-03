@@ -9,12 +9,13 @@ interface SessionState {
 
 export class Session extends Component<{}, SessionState> {
   timer: null | NodeJS.Timeout = null
+
   constructor(props: {}) {
     super(props)
-    this.state = { active: true, timer: 0, duration: 30000 }
+    this.state = { active: true, timer: 0, duration: 60000 }
   }
 
-  componentDidMount(): void {
+  async componentDidMount(): Promise<void> {
     window.addEventListener("load", this.startTimer)
     window.addEventListener("focus", this.onFocus)
   }
@@ -33,7 +34,7 @@ export class Session extends Component<{}, SessionState> {
     this.setState((prevState) => {
       if (prevState.timer + 1000 > prevState.duration) {
         this.stopTimer()
-        return { active: false, timer: 0 }
+        return { active: false, timer: prevState.timer }
       }
 
       return { active: true, timer: prevState.timer + 1000 }
