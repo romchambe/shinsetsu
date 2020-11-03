@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { DaylightBackground } from "../uicomponents/DaylightBackground"
+import { SessionContext } from "../contexts/SessionContext"
 
 interface SessionState {
   active: boolean
@@ -11,7 +11,7 @@ export class Session extends Component<{}, SessionState> {
   timer: null | NodeJS.Timeout = null
   constructor(props: {}) {
     super(props)
-    this.state = { active: true, timer: 0, duration: 180000 }
+    this.state = { active: true, timer: 0, duration: 30000 }
   }
 
   componentDidMount(): void {
@@ -20,20 +20,24 @@ export class Session extends Component<{}, SessionState> {
   }
 
   startTimer: () => void = () => {
-    this.timer = setInterval(
-      () =>
-        this.setState((prevState) => {
-          console.log("next timer", prevState.timer + 1000)
-          return { timer: prevState.timer + 1000 }
-        }),
-      1000
-    )
+    this.timer = setInterval(this.updateTime, 1000)
   }
 
   stopTimer: () => void = () => {
     if (!!this.timer) {
       clearInterval(this.timer)
     }
+  }
+
+  updateTime: () => void = () => {
+    this.setState((prevState) => {
+      if (prevState.timer + 1000 > prevState.duration) {
+        this.stopTimer()
+        return { active: false, timer: 0 }
+      }
+
+      return { active: true, timer: prevState.timer + 1000 }
+    })
   }
 
   onFocus: () => void = () => {
@@ -44,12 +48,9 @@ export class Session extends Component<{}, SessionState> {
 
   render(): JSX.Element {
     return (
-      <DaylightBackground
-        duration={this.state.duration}
-        timeToEnd={this.state.duration - this.state.timer}
-      >
+      <SessionContext.Provider value={this.state}>
         {this.props.children}
-      </DaylightBackground>
+      </SessionContext.Provider>
     )
   }
 }
