@@ -7,7 +7,7 @@ export const Header: React.FunctionComponent<{}> = () => {
   const { timer } = useContext(SessionContext)
   return (
     <div className="flex flex-col w-full p-6 items-center">
-      <img src={shinsetsu} alt="shinsetsu" style={{ width: 112 }} />
+      <img src={shinsetsu} alt="shinsetsu" style={{ width: 96 }} />
       <div className="mt-8">
         <Timer value={timer} />
       </div>

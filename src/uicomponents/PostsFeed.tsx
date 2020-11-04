@@ -1,10 +1,13 @@
 import React, { useState } from "react"
-import { PostsList } from "../controllers/InstaFetcher"
+import { Post } from "../controllers/InstaFetcher"
 
 const postBatch = 9
-
-export const PostsFeed: React.FunctionComponent<PostsList> = (
-  props: PostsList
+interface Props {
+  hashtag: string
+  posts: Post[]
+}
+export const PostsFeed: React.FunctionComponent<Props> = (
+  props: Props
 ) => {
   const [loading, setLoading] = useState<boolean>(false)
   const [displayedPosts, setDisplayed] = useState<JSX.Element[]>([])
@@ -17,13 +20,13 @@ export const PostsFeed: React.FunctionComponent<PostsList> = (
     props.posts.forEach((post, index) => {
       if (index < limit && !idsIndex.includes(post.id)) {
         newPosts.push(
-          <div key={post.id} className="mb-4">
+          <div key={post.id} className="block mb-4 ">
             <img
               src={post.images.src}
               alt={post.description}
               style={{
-                width: 320,
-                height: 320,
+                width: 400,
+                height: 400,
                 marginBottom: 8,
                 objectFit: "contain",
               }}
@@ -50,9 +53,15 @@ export const PostsFeed: React.FunctionComponent<PostsList> = (
   }
 
   return (
-    <div className="flex w-full mt-8 flex-col items-center overflow-y-auto">
-      {displayedPosts}
-      <div onClick={() => setLoading(true)}>Charger plus</div>
+    <div className="flex flex-col items-center overflow-y-auto">
+      <div className="max-w-md">
+        <div className="text-xl font-yogasanspro tracking-tight text-grey-lt-1 px-1 pb-2">
+          🏔 monogatari de la Montagne Enneigée
+        </div>
+
+        {displayedPosts}
+        <div onClick={() => setLoading(true)}>Charger plus</div>
+      </div>
     </div>
   )
 }

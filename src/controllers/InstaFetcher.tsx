@@ -57,7 +57,10 @@ export class InstaFetcher extends Component<Props, State> {
       <Session>
         <DaylightBackground>
           <Header />
-          <PostsFeed posts={this.state.posts} />
+          <PostsFeed
+            posts={this.state.posts}
+            hashtag={this.props.hashtag}
+          />
         </DaylightBackground>
       </Session>
     ) : (
@@ -113,7 +116,13 @@ function extractPostsData(rawPosts: any): Post[] {
     const { node } = rawPost
     const { id } = node
     const timestamp = node.taken_at_timestamp
-    const description = node.edge_media_to_caption.edges[0].node.text
+    let description = ""
+    try {
+      description = node.edge_media_to_caption.edges[0].node.text
+    } catch (error) {
+      console.error(error, node)
+    }
+
     const images = node.thumbnail_resources.reduce(
       (prev: InstaImage, current: InstaImage) => {
         return prev.config_width < current.config_width ? current : prev
