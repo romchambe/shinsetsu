@@ -6,6 +6,7 @@ interface SessionState {
   active: boolean
   timer: number
   duration: number
+  startTimer: () => void
 }
 
 export class Session extends Component<{}, SessionState> {
@@ -13,11 +14,15 @@ export class Session extends Component<{}, SessionState> {
 
   constructor(props: {}) {
     super(props)
-    this.state = { active: false, timer: 0, duration: 60000 }
+    this.state = {
+      active: false,
+      timer: 0,
+      duration: 60000,
+      startTimer: this.startTimer,
+    }
   }
 
   componentDidMount(): void {
-    this.startTimer()
     const { visibilityChange } = getVisibilityEvent()
 
     if (

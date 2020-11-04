@@ -40,7 +40,7 @@ export const PostsFeed: React.FunctionComponent<Props> = (
 
   return (
     <div className="flex flex-col items-center overflow-y-auto">
-      <div className="max-w-md">
+      <div style={{ width: "28rem" }}>
         <div className="text-xl font-yogasanspro tracking-tight text-grey-lt-1 px-1 pb-2">
           🏔 monogatari de la Montagne Enneigée
         </div>

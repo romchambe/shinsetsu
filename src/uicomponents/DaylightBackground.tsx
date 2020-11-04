@@ -40,10 +40,10 @@ export const DaylightBackground: React.FunctionComponent<{
     }deg, ${gradientColor.getValue()}, transparent)`,
   }
 
-  return props.contentsLoaded ? (
+  return (
     <div
       className="flex min-h-full w-full flex-col overflow-hidden"
-      style={gradient}
+      style={props.contentsLoaded ? gradient : undefined}
     >
       {active ? (
         <animated.div
@@ -59,7 +59,5 @@ export const DaylightBackground: React.FunctionComponent<{
 
       {props.children}
     </div>
-  ) : (
-    <React.Fragment>{props.children}</React.Fragment>
   )
 }
