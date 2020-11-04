@@ -1,26 +1,43 @@
-import { Component } from "react"
+import React, { Component } from "react"
 import miniget from "miniget"
+import { PostsFeed } from "../uicomponents/PostsFeed"
+import { DaylightBackground } from "../uicomponents/DaylightBackground"
+import { Header } from "../uicomponents/Header"
+import { Session } from "../controllers/Session"
 
 interface Props {
   hashtag: string
-  render: (data: PostsList) => JSX.Element
+  main?: boolean
+}
+
+interface State {
+  contentsLoaded: boolean
+  posts: Post[]
 }
 
 export interface PostsList {
   posts: Post[]
 }
 
-export interface Post {
-  images: { src: string; config_width: number; config_height: number }
-  timestamp: number
-  description: string
+interface InstaImage {
+  src: string
+  config_width: number
+  config_height: number
 }
 
-export class InstaFetcher extends Component<Props, PostsList> {
+export interface Post {
+  images: InstaImage
+  timestamp: number
+  description: string
+  id: string
+}
+
+export class InstaFetcher extends Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
       posts: [],
+      contentsLoaded: false,
     }
   }
 
@@ -30,17 +47,26 @@ export class InstaFetcher extends Component<Props, PostsList> {
     ).text()
 
     const data = parseHtml(insta)
-    console.log(data)
     const posts = extractPostsData(data)
-    this.setState({ posts })
+
+    this.setState({ posts, contentsLoaded: true })
   }
 
   render(): JSX.Element {
-    return this.props.render({ posts: this.state.posts })
+    return this.state.contentsLoaded ? (
+      <Session>
+        <DaylightBackground>
+          <Header />
+          <PostsFeed posts={this.state.posts} />
+        </DaylightBackground>
+      </Session>
+    ) : (
+      <Header />
+    )
   }
 }
 
-function parseHtml(data: string): any {
+function parseHtml(data: string): unknown {
   const index = matchOrThrow(data, "entry_data")
 
   const dataObj = data.substring(index)
@@ -77,21 +103,27 @@ function parseHtml(data: string): any {
   return JSON.parse(targetObject.join(""))
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function extractPostsData(rawPosts: any): Post[] {
   let posts =
     rawPosts.TagPage[0].graphql.hashtag.edge_hashtag_to_media.edges
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   posts = posts.map((rawPost: any) => {
     const { node } = rawPost
+    const { id } = node
     const timestamp = node.taken_at_timestamp
+    const description = node.edge_media_to_caption.edges[0].node.text
     const images = node.thumbnail_resources.reduce(
-      (prev: any, current: any) => {
+      (prev: InstaImage, current: InstaImage) => {
         return prev.config_width < current.config_width ? current : prev
       }
     )
-    const description = ""
-    return { timestamp, images, description }
+
+    return { timestamp, images, description, id }
   })
+
+  posts.sort((a: Post, b: Post) => b.timestamp - a.timestamp)
   return posts
 }
 

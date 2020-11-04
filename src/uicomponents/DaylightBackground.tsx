@@ -39,7 +39,10 @@ export const DaylightBackground: React.FunctionComponent<{}> = (props) => {
   }
 
   return (
-    <div className="h-full w-full" style={gradient}>
+    <div
+      className="flex min-h-full w-full flex-col overflow-hidden"
+      style={gradient}
+    >
       {active ? (
         <animated.div
           className={`absolute rounded-2xl w-8 h-8`}
