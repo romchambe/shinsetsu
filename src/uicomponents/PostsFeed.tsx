@@ -44,7 +44,6 @@ export const PostsFeed: React.FunctionComponent<Props> = (
         <div className="text-xl font-yogasanspro tracking-tight text-grey-lt-1 px-1 pb-2">
           🏔 monogatari de la Montagne Enneigée
         </div>
-
         {displayedPosts}
         <div onClick={() => setLoading(true)}>Charger plus</div>
       </div>

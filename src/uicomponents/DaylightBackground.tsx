@@ -5,7 +5,9 @@ import { SessionContext } from "../contexts/SessionContext"
 const entryThreshold = 0.2,
   exitThreshold = 0.8
 
-export const DaylightBackground: React.FunctionComponent<{}> = (props) => {
+export const DaylightBackground: React.FunctionComponent<{
+  contentsLoaded: boolean
+}> = (props) => {
   const { active, timer, duration } = useContext(SessionContext)
 
   const [{ progress }, setProgress] = useSpring(() => ({
@@ -38,7 +40,7 @@ export const DaylightBackground: React.FunctionComponent<{}> = (props) => {
     }deg, ${gradientColor.getValue()}, transparent)`,
   }
 
-  return (
+  return props.contentsLoaded ? (
     <div
       className="flex min-h-full w-full flex-col overflow-hidden"
       style={gradient}
@@ -57,5 +59,7 @@ export const DaylightBackground: React.FunctionComponent<{}> = (props) => {
 
       {props.children}
     </div>
+  ) : (
+    <React.Fragment>{props.children}</React.Fragment>
   )
 }

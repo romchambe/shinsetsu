@@ -1,13 +1,10 @@
-import React, { Component } from "react"
+import { Component } from "react"
 import miniget from "miniget"
-import { PostsFeed } from "../uicomponents/PostsFeed"
-import { DaylightBackground } from "../uicomponents/DaylightBackground"
-import { Header } from "../uicomponents/Header"
-import { Session } from "../controllers/Session"
 
 interface Props {
   hashtag: string
   main?: boolean
+  render: (props: State) => JSX.Element
 }
 
 interface State {
@@ -53,19 +50,7 @@ export class InstaFetcher extends Component<Props, State> {
   }
 
   render(): JSX.Element {
-    return this.state.contentsLoaded ? (
-      <Session>
-        <DaylightBackground>
-          <Header />
-          <PostsFeed
-            posts={this.state.posts}
-            hashtag={this.props.hashtag}
-          />
-        </DaylightBackground>
-      </Session>
-    ) : (
-      <Header />
-    )
+    return this.props.render(this.state)
   }
 }
 
