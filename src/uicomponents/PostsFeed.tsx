@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { Post } from "../controllers/InstaFetcher"
+import { Picture } from "./Picture"
 
 const postBatch = 9
 interface Props {
@@ -19,22 +20,7 @@ export const PostsFeed: React.FunctionComponent<Props> = (
 
     props.posts.forEach((post, index) => {
       if (index < limit && !idsIndex.includes(post.id)) {
-        newPosts.push(
-          <div key={post.id} className="block mb-4 ">
-            <img
-              src={post.images.src}
-              alt={post.description}
-              style={{
-                width: 400,
-                height: 400,
-                marginBottom: 8,
-                objectFit: "contain",
-              }}
-            />
-            {new Date(post.timestamp * 1000).toLocaleString()}
-          </div>
-        )
-
+        newPosts.push(<Picture key={post.id} {...post} />)
         newIds.push(post.id)
       }
     })
