@@ -10,7 +10,7 @@ export const Timer: React.FunctionComponent<{ value: number }> = (
   }${Math.floor((props.value % 60000) / 1000)}`
 
   return (
-    <div className="rounded-lg bg-white w-40">
+    <div className="rounded-lg bg-white w-40 h-12">
       <div className="text-3xl text-center leading-none py-2 font-bold text-funky-text">
         {time}
       </div>

@@ -5,27 +5,40 @@ import brand from "../assets/images/shinsetsu-text.png"
 import { SessionContext } from "../contexts/SessionContext"
 import { Timer } from "./Timer"
 
-export const Header: React.FunctionComponent<{}> = () => {
+interface Props {
+  contentScrolled: boolean
+}
+
+export const Header: React.FunctionComponent<Props> = (props) => {
   const { timer } = useContext(SessionContext)
 
   const [anim, setAnim] = useSpring(() => ({
     value: 0,
   }))
 
-  console.log("ANIM VAL", anim.value.getValue())
-
   const translateY = anim.value.interpolate(
-    (progress) => `translate(0px, -${progress * 100}px)`
+    (progress) => `translate(0px, -${progress * 104}px)`
   )
 
   const opacity = anim.value.interpolate((progress) => 1 - progress)
 
   const translateLogo = anim.value.interpolate(
-    (progress) => `translate(-${progress * 80}px, ${progress * 100}px)`
+    (progress) => `translate(-${progress * 86}px, ${progress * 104}px)`
   )
+
+  const translateTimer = anim.value.interpolate(
+    (progress) => `translate(${progress * 30}px, 0px)`
+  )
+
+  if (props.contentScrolled) {
+    setAnim({ value: 1 })
+  }
+  if (!props.contentScrolled) {
+    setAnim({ value: 0 })
+  }
   return (
     <animated.div
-      className="flex flex-col w-full pt-6 pb-8 items-center bg-green-400"
+      className="flex flex-col w-full py-6 items-center"
       style={{ transform: translateY }}
     >
       <animated.img
@@ -36,12 +49,12 @@ export const Header: React.FunctionComponent<{}> = () => {
       <animated.img
         alt="shinsetsu"
         src={brand}
-        style={{ width: 100, opacity }}
+        style={{ height: 20, opacity }}
         className="mt-3"
       />
-      <div className="mt-6" onClick={() => setAnim({ value: 1 })}>
+      <animated.div className="mt-6" style={{ transform: translateTimer }}>
         <Timer value={timer} />
-      </div>
+      </animated.div>
     </animated.div>
   )
 }

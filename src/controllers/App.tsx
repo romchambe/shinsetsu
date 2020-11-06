@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import "../assets/styles/tailwind.output.css"
 import { DaylightBackground } from "../uicomponents/DaylightBackground"
 import { Header } from "../uicomponents/Header"
@@ -8,6 +8,7 @@ import { ScrollController } from "./ScrollController"
 import { Session } from "./Session"
 
 const App: React.FunctionComponent<{}> = () => {
+  const [contentScrolled, setContentScrolled] = useState<boolean>(false)
   return (
     <div className="h-screen w-full flex">
       <Session>
@@ -16,8 +17,8 @@ const App: React.FunctionComponent<{}> = () => {
           main
           render={({ contentsLoaded, posts }) => (
             <DaylightBackground contentsLoaded={contentsLoaded}>
-              <Header />
-              <ScrollController>
+              <Header contentScrolled={contentScrolled} />
+              <ScrollController setContentScrolled={setContentScrolled}>
                 <PostsFeed posts={posts} />
               </ScrollController>
             </DaylightBackground>
