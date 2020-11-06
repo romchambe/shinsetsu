@@ -110,7 +110,7 @@ export class ScrollController extends Component<Props, State> {
                     color="#9a82e6"
                     height={32}
                     width={32}
-                    timeout={500} //3 secs
+                    timeout={5000} //3 secs
                   />
                 </div>
               ) : null}
