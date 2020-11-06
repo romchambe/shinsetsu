@@ -1,6 +1,6 @@
-import React, { useCallback, useState } from "react"
+import React, { useCallback, useContext, useEffect, useState } from "react"
+import { ScrollContext } from "../contexts/ScrollContext"
 import { Post } from "../controllers/InstaFetcher"
-
 import { Picture } from "./Picture"
 
 const postBatch = 9
@@ -10,9 +10,9 @@ interface Props {
 export const PostsFeed: React.FunctionComponent<Props> = ({
   posts,
 }: Props) => {
-  const [loading, setLoading] = useState<boolean>(false)
   const [displayedPosts, setDisplayed] = useState<JSX.Element[]>([])
   const [idsIndex, setIdsIndex] = useState<string[]>([])
+  const { shouldReload, deactivateReload } = useContext(ScrollContext)
 
   const loadBatch = useCallback(
     (limit: number) => {
@@ -32,13 +32,13 @@ export const PostsFeed: React.FunctionComponent<Props> = ({
     [posts]
   )
 
-  if (posts.length > 0 && displayedPosts.length === 0) {
-    setLoading(true)
-  }
-
-  if (loading) {
+  useEffect(() => {
     loadBatch(displayedPosts.length + postBatch)
-    setLoading(false)
+    deactivateReload()
+  }, [shouldReload])
+
+  if (posts.length > 0 && displayedPosts.length === 0) {
+    loadBatch(displayedPosts.length + postBatch)
   }
 
   console.log("RENDER FEED")
@@ -48,7 +48,6 @@ export const PostsFeed: React.FunctionComponent<Props> = ({
         🏔 monogatari de la Montagne Enneigée
       </div>
       {displayedPosts}
-      <div onClick={() => setLoading(true)}>Charger plus</div>
     </div>
   )
 }
