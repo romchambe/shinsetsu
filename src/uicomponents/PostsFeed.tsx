@@ -1,35 +1,38 @@
-import React, { useState } from "react"
+import React, { useCallback, useState } from "react"
 import { Post } from "../controllers/InstaFetcher"
+
 import { Picture } from "./Picture"
 
 const postBatch = 9
 interface Props {
-  hashtag: string
   posts: Post[]
 }
-export const PostsFeed: React.FunctionComponent<Props> = (
-  props: Props
-) => {
+export const PostsFeed: React.FunctionComponent<Props> = ({
+  posts,
+}: Props) => {
   const [loading, setLoading] = useState<boolean>(false)
   const [displayedPosts, setDisplayed] = useState<JSX.Element[]>([])
   const [idsIndex, setIdsIndex] = useState<string[]>([])
 
-  const loadBatch = (limit: number) => {
-    const newPosts: JSX.Element[] = []
-    const newIds: string[] = []
+  const loadBatch = useCallback(
+    (limit: number) => {
+      const newPosts: JSX.Element[] = []
+      const newIds: string[] = []
 
-    props.posts.forEach((post, index) => {
-      if (index < limit && !idsIndex.includes(post.id)) {
-        newPosts.push(<Picture key={post.id} {...post} />)
-        newIds.push(post.id)
-      }
-    })
+      posts.forEach((post, index) => {
+        if (index < limit && !idsIndex.includes(post.id)) {
+          newPosts.push(<Picture key={post.id} {...post} />)
+          newIds.push(post.id)
+        }
+      })
 
-    setDisplayed([...displayedPosts, ...newPosts])
-    setIdsIndex([...idsIndex, ...newIds])
-  }
+      setDisplayed([...displayedPosts, ...newPosts])
+      setIdsIndex([...idsIndex, ...newIds])
+    },
+    [posts]
+  )
 
-  if (props.posts.length > 0 && displayedPosts.length === 0) {
+  if (posts.length > 0 && displayedPosts.length === 0) {
     setLoading(true)
   }
 
@@ -38,15 +41,14 @@ export const PostsFeed: React.FunctionComponent<Props> = (
     setLoading(false)
   }
 
+  console.log("RENDER FEED")
   return (
-    <div className="flex flex-col items-center overflow-y-auto">
-      <div style={{ width: "28rem" }}>
-        <div className="text-xl font-yogasanspro tracking-tight text-grey-lt-1 px-1 pb-2">
-          🏔 monogatari de la Montagne Enneigée
-        </div>
-        {displayedPosts}
-        <div onClick={() => setLoading(true)}>Charger plus</div>
+    <div style={{ width: "28rem" }}>
+      <div className="text-xl font-yogasanspro tracking-tight text-grey-lt-1 px-1 pb-2">
+        🏔 monogatari de la Montagne Enneigée
       </div>
+      {displayedPosts}
+      <div onClick={() => setLoading(true)}>Charger plus</div>
     </div>
   )
 }

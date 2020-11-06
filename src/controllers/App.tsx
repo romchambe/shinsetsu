@@ -4,6 +4,7 @@ import { DaylightBackground } from "../uicomponents/DaylightBackground"
 import { Header } from "../uicomponents/Header"
 import { PostsFeed } from "../uicomponents/PostsFeed"
 import { InstaFetcher } from "./InstaFetcher"
+import { ScrollController } from "./ScrollController"
 import { Session } from "./Session"
 
 const App: React.FunctionComponent<{}> = () => {
@@ -16,7 +17,9 @@ const App: React.FunctionComponent<{}> = () => {
           render={({ contentsLoaded, posts }) => (
             <DaylightBackground contentsLoaded={contentsLoaded}>
               <Header />
-              <PostsFeed posts={posts} hashtag="chamonix" />
+              <ScrollController>
+                <PostsFeed posts={posts} />
+              </ScrollController>
             </DaylightBackground>
           )}
         />
