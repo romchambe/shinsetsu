@@ -17,7 +17,7 @@ export class Session extends Component<{}, SessionState> {
     this.state = {
       active: false,
       timer: 0,
-      duration: 60000,
+      duration: 180000,
       startTimer: this.startTimer,
     }
   }

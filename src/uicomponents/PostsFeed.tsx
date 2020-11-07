@@ -1,4 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from "react"
+import { animated, useSpring } from "react-spring"
 import { ScrollContext } from "../contexts/ScrollContext"
 import { Post } from "../controllers/InstaFetcher"
 import { Picture } from "./Picture"
@@ -6,13 +7,19 @@ import { Picture } from "./Picture"
 const postBatch = 9
 interface Props {
   posts: Post[]
+  contentsLoaded: boolean
 }
 export const PostsFeed: React.FunctionComponent<Props> = ({
   posts,
+  contentsLoaded,
 }: Props) => {
   const [displayedPosts, setDisplayed] = useState<JSX.Element[]>([])
   const [idsIndex, setIdsIndex] = useState<string[]>([])
   const { shouldReload, deactivateReload } = useContext(ScrollContext)
+
+  const backgroundOpacity = useSpring({
+    opacity: contentsLoaded ? 1 : 0,
+  })
 
   const loadBatch = useCallback(
     (limit: number) => {
@@ -41,13 +48,17 @@ export const PostsFeed: React.FunctionComponent<Props> = ({
     loadBatch(displayedPosts.length + postBatch)
   }
 
-  console.log("RENDER FEED")
-  return (
-    <div style={{ width: "28rem" }}>
-      <div className="text-xl font-yogasanspro tracking-tight text-grey-lt-1 px-1 pb-2">
-        🏔 monogatari de la Montagne Enneigée
-      </div>
+  console.log("RENDER FEED", backgroundOpacity)
+  return contentsLoaded ? (
+    <animated.div style={{ ...{ width: "28rem" }, ...backgroundOpacity }}>
+      {displayedPosts.length > 0 ? (
+        <div className="text-xl font-yogasanspro tracking-tight text-grey-lt-1 px-1 pb-2">
+          🏔 monogatari de la Montagne Enneigée
+        </div>
+      ) : null}
       {displayedPosts}
-    </div>
+    </animated.div>
+  ) : (
+    <animated.div style={{ width: "28rem" }}></animated.div>
   )
 }

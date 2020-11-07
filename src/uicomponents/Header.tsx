@@ -7,6 +7,7 @@ import { Timer } from "./Timer"
 
 interface Props {
   contentScrolled: boolean
+  contentsLoaded: boolean
 }
 
 export const Header: React.FunctionComponent<Props> = (props) => {
@@ -15,6 +16,10 @@ export const Header: React.FunctionComponent<Props> = (props) => {
   const [anim, setAnim] = useSpring(() => ({
     value: 0,
   }))
+
+  const timerOpacity = useSpring({
+    opacity: props.contentsLoaded ? 1 : 0,
+  })
 
   const translateY = anim.value.interpolate(
     (progress) => `translate(0px, -${progress * 104}px)`
@@ -52,7 +57,11 @@ export const Header: React.FunctionComponent<Props> = (props) => {
         style={{ height: 20, opacity }}
         className="mt-3"
       />
-      <animated.div className="mt-6" style={{ transform: translateTimer }}>
+
+      <animated.div
+        className="mt-6"
+        style={{ ...{ transform: translateTimer }, ...timerOpacity }}
+      >
         <Timer value={timer} />
       </animated.div>
     </animated.div>
