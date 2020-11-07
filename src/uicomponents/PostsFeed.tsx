@@ -3,6 +3,7 @@ import { animated, useSpring } from "react-spring"
 import { ScrollContext } from "../contexts/ScrollContext"
 import { Post } from "../controllers/InstaFetcher"
 import { Picture } from "./Picture"
+import Loader from "react-loader-spinner"
 
 const postBatch = 9
 interface Props {
@@ -52,13 +53,28 @@ export const PostsFeed: React.FunctionComponent<Props> = ({
   return contentsLoaded ? (
     <animated.div style={{ ...{ width: "28rem" }, ...backgroundOpacity }}>
       {displayedPosts.length > 0 ? (
-        <div className="text-xl font-yogasanspro tracking-tight text-grey-lt-1 px-1 pb-2">
+        <div className="text-xl font-yogasanspro tracking-tight text-md px-1 pb-2">
           🏔 monogatari de la Montagne Enneigée
         </div>
       ) : null}
       {displayedPosts}
     </animated.div>
   ) : (
-    <animated.div style={{ width: "28rem" }}></animated.div>
+    <animated.div
+      className="flex flex-col items-center"
+      style={{ width: "28rem" }}
+    >
+      <Loader
+        type="Audio"
+        color="#9a82e6"
+        height={32}
+        width={32}
+        timeout={5000} //3 secs
+      />
+      <div className="text-center mt-6">
+        la nuit venue, la neige fraîche refléta les astres dans un
+        silencieux scintillement
+      </div>
+    </animated.div>
   )
 }

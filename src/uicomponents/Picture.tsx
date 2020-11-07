@@ -17,7 +17,7 @@ export const Picture: React.FunctionComponent<Post> = (props) => {
         }}
       />
       <div
-        className="font-yogasanspro py-3 px-3 text-grey-lt-1 overflow-hidden"
+        className="font-yogasanspro py-3 px-3 text-md overflow-hidden"
         style={{ maxHeight: "8.5rem" }}
       >
         {props.description}
