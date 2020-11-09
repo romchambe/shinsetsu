@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "/my-app/static/css/main.901de7a9.chunk.css",
-    "main.js": "/my-app/static/js/main.0800430b.chunk.js",
-    "main.js.map": "/my-app/static/js/main.0800430b.chunk.js.map",
-    "runtime-main.js": "/my-app/static/js/runtime-main.e063f7aa.js",
-    "runtime-main.js.map": "/my-app/static/js/runtime-main.e063f7aa.js.map",
-    "static/js/2.6fe738d5.chunk.js": "/my-app/static/js/2.6fe738d5.chunk.js",
-    "static/js/2.6fe738d5.chunk.js.map": "/my-app/static/js/2.6fe738d5.chunk.js.map",
-    "static/js/3.c303840c.chunk.js": "/my-app/static/js/3.c303840c.chunk.js",
-    "static/js/3.c303840c.chunk.js.map": "/my-app/static/js/3.c303840c.chunk.js.map",
-    "index.html": "/my-app/index.html",
-    "static/css/main.901de7a9.chunk.css.map": "/my-app/static/css/main.901de7a9.chunk.css.map",
-    "static/js/2.6fe738d5.chunk.js.LICENSE.txt": "/my-app/static/js/2.6fe738d5.chunk.js.LICENSE.txt",
-    "static/media/shinsetsu-square.7dd6f5e2.png": "/my-app/static/media/shinsetsu-square.7dd6f5e2.png",
-    "static/media/shinsetsu-text.9f84c9e4.png": "/my-app/static/media/shinsetsu-text.9f84c9e4.png"
+    "main.css": "/shinsetsu/static/css/main.901de7a9.chunk.css",
+    "main.js": "/shinsetsu/static/js/main.0800430b.chunk.js",
+    "main.js.map": "/shinsetsu/static/js/main.0800430b.chunk.js.map",
+    "runtime-main.js": "/shinsetsu/static/js/runtime-main.7d528f5f.js",
+    "runtime-main.js.map": "/shinsetsu/static/js/runtime-main.7d528f5f.js.map",
+    "static/js/2.6fe738d5.chunk.js": "/shinsetsu/static/js/2.6fe738d5.chunk.js",
+    "static/js/2.6fe738d5.chunk.js.map": "/shinsetsu/static/js/2.6fe738d5.chunk.js.map",
+    "static/js/3.c303840c.chunk.js": "/shinsetsu/static/js/3.c303840c.chunk.js",
+    "static/js/3.c303840c.chunk.js.map": "/shinsetsu/static/js/3.c303840c.chunk.js.map",
+    "index.html": "/shinsetsu/index.html",
+    "static/css/main.901de7a9.chunk.css.map": "/shinsetsu/static/css/main.901de7a9.chunk.css.map",
+    "static/js/2.6fe738d5.chunk.js.LICENSE.txt": "/shinsetsu/static/js/2.6fe738d5.chunk.js.LICENSE.txt",
+    "static/media/shinsetsu-square.7dd6f5e2.png": "/shinsetsu/static/media/shinsetsu-square.7dd6f5e2.png",
+    "static/media/shinsetsu-text.9f84c9e4.png": "/shinsetsu/static/media/shinsetsu-text.9f84c9e4.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.e063f7aa.js",
+    "static/js/runtime-main.7d528f5f.js",
     "static/js/2.6fe738d5.chunk.js",
     "static/css/main.901de7a9.chunk.css",
     "static/js/main.0800430b.chunk.js"
