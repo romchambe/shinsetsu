@@ -20,12 +20,26 @@
     "typescript": "^4.0.3",
     "web-vitals": "^0.2.4"
   },
+  "devDependencies": {
+    "@types/react-loader-spinner": "^3.1.1",
+    "@typescript-eslint/eslint-plugin": "^4.6.0",
+    "@typescript-eslint/parser": "^4.6.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-jest": "^24.1.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.21.5",
+    "gh-pages": "^3.1.0",
+    "prettier": "^2.1.2"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "tailwind": "tailwindcss build src/assets/styles/tailwind.css -o src/assets/styles/tailwind.output.css",
+    "predeploy": "npm run build",
+    "prebuild": "export NODE_ENV=production && npm run tailwind",
+    "deploy": "gh-pages -d build",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
   },
   "eslintConfig": {
@@ -34,6 +48,7 @@
       "react-app/jest"
     ]
   },
+  "homepage": "https://romchambe.github.io/shinsetsu/",
   "browserslist": {
     "production": [
       ">0.2%",
@@ -45,15 +60,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@types/react-loader-spinner": "^3.1.1",
-    "@typescript-eslint/eslint-plugin": "^4.6.0",
-    "@typescript-eslint/parser": "^4.6.0",
-    "eslint-config-prettier": "^6.15.0",
-    "eslint-plugin-jest": "^24.1.0",
-    "eslint-plugin-prettier": "^3.1.4",
-    "eslint-plugin-react": "^7.21.5",
-    "prettier": "^2.1.2"
   }
 }
