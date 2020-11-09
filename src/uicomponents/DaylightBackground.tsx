@@ -10,6 +10,10 @@ export const DaylightBackground: React.FunctionComponent<{
 }> = (props) => {
   const { active, timer, duration } = useContext(SessionContext)
 
+  const backgroundOpacity = useSpring({
+    from: { opacity: 0 },
+    to: { opacity: 1 },
+  })
   const [{ progress }, setProgress] = useSpring(() => ({
     progress: 0,
     config: { duration: 1000 },
@@ -41,9 +45,9 @@ export const DaylightBackground: React.FunctionComponent<{
   }
 
   return (
-    <div
+    <animated.div
       className="flex min-h-full w-full flex-col overflow-hidden"
-      style={props.contentsLoaded ? gradient : undefined}
+      style={{ ...gradient, ...backgroundOpacity }}
     >
       {active ? (
         <animated.div
@@ -58,6 +62,6 @@ export const DaylightBackground: React.FunctionComponent<{
       ) : null}
 
       {props.children}
-    </div>
+    </animated.div>
   )
 }

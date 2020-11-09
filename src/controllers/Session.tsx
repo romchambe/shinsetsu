@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 import { SessionContext } from "../contexts/SessionContext"
+import { Header } from "../uicomponents/Header"
 import { getVisibilityEvent } from "../utils/visibilityChange"
 
 interface SessionState {
@@ -7,6 +8,7 @@ interface SessionState {
   timer: number
   duration: number
   startTimer: () => void
+  sessionRestart: number | null
 }
 
 export class Session extends Component<{}, SessionState> {
@@ -15,10 +17,11 @@ export class Session extends Component<{}, SessionState> {
   constructor(props: {}) {
     super(props)
     this.state = {
-      active: false,
+      active: true,
       timer: 0,
-      duration: 60000,
+      duration: 30000,
       startTimer: this.startTimer,
+      sessionRestart: null,
     }
   }
 
@@ -44,10 +47,22 @@ export class Session extends Component<{}, SessionState> {
     this.timer = null
   }
 
+  endSession: () => void = () => {
+    const sessionRestart = Date.now() + 20 * 60000
+
+    window.localStorage.setItem(
+      "sessionRestart",
+      sessionRestart.toString()
+    )
+
+    this.setState({ sessionRestart, active: false })
+  }
+
   updateTime: () => void = () => {
     this.setState((prevState) => {
       if (prevState.timer + 1000 > prevState.duration) {
         this.stopTimer()
+        this.endSession()
         return { active: false, timer: prevState.timer }
       }
 
@@ -68,7 +83,17 @@ export class Session extends Component<{}, SessionState> {
   render(): JSX.Element {
     return (
       <SessionContext.Provider value={this.state}>
-        {this.props.children}
+        {this.state.active ? (
+          this.props.children
+        ) : (
+          <div className="flex flex-col items-center w-full">
+            <Header contentScrolled={false} contentsLoaded={false} />
+            <div className="mt-6">
+              dans quelques minutes, la neige fraiche aura fondu,
+              patience... ;)
+            </div>
+          </div>
+        )}
       </SessionContext.Provider>
     )
   }
