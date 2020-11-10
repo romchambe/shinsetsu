@@ -7,21 +7,23 @@ interface SessionState {
   active: boolean
   timer: number
   duration: number
-  startTimer: () => void
-  sessionRestart: number | null
+  startSession: () => void
+  nextSessionTime: number | null
 }
 
+const SESSION_DURATION = 180000
+const BREAK_DURATION = 1 * 60000
 export class Session extends Component<{}, SessionState> {
   timer: null | NodeJS.Timeout = null
 
   constructor(props: {}) {
     super(props)
     this.state = {
-      active: true,
+      active: false,
       timer: 0,
-      duration: 30000,
-      startTimer: this.startTimer,
-      sessionRestart: null,
+      duration: SESSION_DURATION,
+      startSession: this.startSession,
+      nextSessionTime: null,
     }
   }
 
@@ -34,6 +36,104 @@ export class Session extends Component<{}, SessionState> {
     ) {
       document.addEventListener(visibilityChange, this.onVisibilityChange)
     }
+
+    const storedNextSession = window.localStorage.getItem(
+      "nextSessionTime"
+    )
+
+    const storedCurrentSession = window.localStorage.getItem(
+      "currentSessionTime"
+    )
+
+    this.handleSessionState(storedNextSession, storedCurrentSession)
+  }
+
+  startSession: () => void = () => {
+    const currentTime = Date.now()
+    const storedCurrentSession = window.localStorage.getItem(
+      "currentSessionTime"
+    )
+
+    if (!!storedCurrentSession) {
+      const currentSessionTime = Number.parseInt(storedCurrentSession)
+
+      if (
+        currentTime >=
+        currentSessionTime + SESSION_DURATION + BREAK_DURATION
+      ) {
+        this.startTimer()
+        window.localStorage.setItem(
+          "currentSessionTime",
+          currentTime.toString()
+        )
+      }
+
+      if (currentTime <= currentSessionTime + SESSION_DURATION) {
+        this.startTimer()
+      }
+    } else {
+      this.startTimer()
+      window.localStorage.setItem(
+        "currentSessionTime",
+        currentTime.toString()
+      )
+    }
+  }
+
+  endSession: () => void = () => {
+    this.stopTimer()
+    const nextSessionTime = Date.now() + BREAK_DURATION
+
+    window.localStorage.setItem(
+      "nextSessionTime",
+      nextSessionTime.toString()
+    )
+
+    this.setState({ nextSessionTime, active: false })
+  }
+
+  handleSessionState = (
+    storedNextSession: string | null,
+    storedCurrentSession: string | null
+  ): void => {
+    const nextState: Partial<SessionState> = {
+      active: true,
+    }
+
+    console.log(
+      "NEXT SESSION",
+      storedNextSession,
+      !!storedNextSession
+        ? new Date(Number.parseInt(storedNextSession))
+        : null
+    )
+
+    console.log(
+      "CURRENT SESSION",
+      storedCurrentSession,
+      !!storedCurrentSession
+        ? new Date(Number.parseInt(storedCurrentSession))
+        : null
+    )
+
+    if (!!storedNextSession) {
+      const nextSessionTime = Number.parseInt(storedNextSession)
+      if (Date.now() < nextSessionTime) {
+        nextState.active = false
+        nextState.nextSessionTime = nextSessionTime
+      }
+    }
+
+    if (!!storedCurrentSession) {
+      const currentSessionTime = Number.parseInt(storedCurrentSession)
+
+      if (Date.now() < currentSessionTime + SESSION_DURATION) {
+        nextState.timer =
+          Math.round((Date.now() - currentSessionTime) / 1000) * 1000
+      }
+    }
+
+    this.setState((prevState) => ({ ...prevState, ...nextState }))
   }
 
   startTimer: () => void = () => {
@@ -47,21 +147,9 @@ export class Session extends Component<{}, SessionState> {
     this.timer = null
   }
 
-  endSession: () => void = () => {
-    const sessionRestart = Date.now() + 20 * 60000
-
-    window.localStorage.setItem(
-      "sessionRestart",
-      sessionRestart.toString()
-    )
-
-    this.setState({ sessionRestart, active: false })
-  }
-
   updateTime: () => void = () => {
     this.setState((prevState) => {
       if (prevState.timer + 1000 > prevState.duration) {
-        this.stopTimer()
         this.endSession()
         return { active: false, timer: prevState.timer }
       }
@@ -89,8 +177,12 @@ export class Session extends Component<{}, SessionState> {
           <div className="flex flex-col items-center w-full">
             <Header contentScrolled={false} contentsLoaded={false} />
             <div className="mt-6">
-              dans quelques minutes, la neige fraiche aura fondu,
-              patience... ;)
+              un peu de patience pendant que la neige fraîche
+              s&apos;accumule
+            </div>
+            <div className="mt-6">
+              un peu de patience pendant que la neige fraîche
+              s&apos;accumule
             </div>
           </div>
         )}

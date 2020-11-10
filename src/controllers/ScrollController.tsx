@@ -28,7 +28,6 @@ export class ScrollController extends Component<Props, State> {
   reloadAnim: NodeJS.Timeout | null = null
 
   handleScroll: (e: React.UIEvent<HTMLElement>) => void = (e) => {
-    console.log("Scroll", e.currentTarget.scrollTop)
     const scrollMax = this.scrollContainer
       ? this.scrollContainer.scrollHeight -
         this.scrollContainer.clientHeight

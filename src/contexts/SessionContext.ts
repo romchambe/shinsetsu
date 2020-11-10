@@ -4,7 +4,7 @@ export const SessionContext = React.createContext({
   active: true,
   timer: 0,
   duration: 180000,
-  startTimer: () => {
+  startSession: () => {
     console.log("")
   },
 })
