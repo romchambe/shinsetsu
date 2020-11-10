@@ -30,6 +30,7 @@ export interface Post {
 
 export class InstaFetcher extends Component<Props, State> {
   static contextType = SessionContext
+
   constructor(props: Props) {
     super(props)
     this.state = {
@@ -48,7 +49,7 @@ export class InstaFetcher extends Component<Props, State> {
     const posts = extractPostsData(data)
 
     this.setState({ posts, contentsLoaded: true })
-    this.context.startTimer()
+    this.context.startSession()
   }
 
   render(): JSX.Element {

@@ -16,10 +16,7 @@ export const Picture: React.FunctionComponent<Post> = (props) => {
           objectFit: "contain",
         }}
       />
-      <div
-        className="font-yogasanspro py-3 px-3 text-md overflow-hidden"
-        style={{ maxHeight: "8.5rem" }}
-      >
+      <div className="font-yogasanspro py-3 px-3 text-md overflow-hidden">
         {props.description}
       </div>
     </div>
