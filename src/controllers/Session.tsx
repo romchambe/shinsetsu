@@ -99,7 +99,7 @@ export class Session extends Component<{}, SessionState> {
     const nextState: Partial<SessionState> = {
       active: true,
     }
-
+    const currentTime = Date.now()
     console.log(
       "NEXT SESSION",
       storedNextSession,
@@ -118,18 +118,32 @@ export class Session extends Component<{}, SessionState> {
 
     if (!!storedNextSession) {
       const nextSessionTime = Number.parseInt(storedNextSession)
-      if (Date.now() < nextSessionTime) {
+      if (currentTime < nextSessionTime) {
         nextState.active = false
         nextState.nextSessionTime = nextSessionTime
+      }
+
+      if (!!storedCurrentSession) {
+        const currentSessionTime = Number.parseInt(storedCurrentSession)
+
+        if (
+          currentTime >= nextSessionTime &&
+          currentTime <=
+            currentSessionTime + SESSION_DURATION + BREAK_DURATION
+        ) {
+          nextState.active = false
+          nextState.nextSessionTime =
+            currentSessionTime + SESSION_DURATION + BREAK_DURATION
+        }
       }
     }
 
     if (!!storedCurrentSession) {
       const currentSessionTime = Number.parseInt(storedCurrentSession)
 
-      if (Date.now() < currentSessionTime + SESSION_DURATION) {
+      if (currentTime < currentSessionTime + SESSION_DURATION) {
         nextState.timer =
-          Math.round((Date.now() - currentSessionTime) / 1000) * 1000
+          Math.round((currentTime - currentSessionTime) / 1000) * 1000
       }
     }
 
@@ -176,10 +190,6 @@ export class Session extends Component<{}, SessionState> {
         ) : (
           <div className="flex flex-col items-center w-full">
             <Header contentScrolled={false} contentsLoaded={false} />
-            <div className="mt-6">
-              un peu de patience pendant que la neige fraîche
-              s&apos;accumule
-            </div>
             <div className="mt-6">
               un peu de patience pendant que la neige fraîche
               s&apos;accumule
