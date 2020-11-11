@@ -282,10 +282,16 @@ export class Session extends Component<{}, SessionState> {
             }}
           >
             <Header contentScrolled={false} contentsLoaded={false} />
-            <div className="mt-6 mb-2 text-black">
+            <div
+              className="mt-6 mb-2 text-black"
+              style={{ letterSpacing: "-0.3px" }}
+            >
               une petite pause avant de continuer ;)
             </div>
-            <div className="mb-6 text-text-lt">
+            <div
+              className="mb-6 text-text-lt"
+              style={{ letterSpacing: "-0.3px" }}
+            >
               il sera bientôt temps de contempler les montagnes à nouveau
             </div>
             <Timer value={this.state.nextTimer} />
