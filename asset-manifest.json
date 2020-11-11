@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.css": "/shinsetsu/static/css/main.178bb3a2.chunk.css",
-    "main.js": "/shinsetsu/static/js/main.81ab01a7.chunk.js",
-    "main.js.map": "/shinsetsu/static/js/main.81ab01a7.chunk.js.map",
+    "main.css": "/shinsetsu/static/css/main.4a545ff8.chunk.css",
+    "main.js": "/shinsetsu/static/js/main.f374162e.chunk.js",
+    "main.js.map": "/shinsetsu/static/js/main.f374162e.chunk.js.map",
     "runtime-main.js": "/shinsetsu/static/js/runtime-main.7d528f5f.js",
     "runtime-main.js.map": "/shinsetsu/static/js/runtime-main.7d528f5f.js.map",
     "static/js/2.f6e2d842.chunk.js": "/shinsetsu/static/js/2.f6e2d842.chunk.js",
@@ -10,7 +10,7 @@
     "static/js/3.c303840c.chunk.js": "/shinsetsu/static/js/3.c303840c.chunk.js",
     "static/js/3.c303840c.chunk.js.map": "/shinsetsu/static/js/3.c303840c.chunk.js.map",
     "index.html": "/shinsetsu/index.html",
-    "static/css/main.178bb3a2.chunk.css.map": "/shinsetsu/static/css/main.178bb3a2.chunk.css.map",
+    "static/css/main.4a545ff8.chunk.css.map": "/shinsetsu/static/css/main.4a545ff8.chunk.css.map",
     "static/js/2.f6e2d842.chunk.js.LICENSE.txt": "/shinsetsu/static/js/2.f6e2d842.chunk.js.LICENSE.txt",
     "static/media/shinsetsu-square.7dd6f5e2.png": "/shinsetsu/static/media/shinsetsu-square.7dd6f5e2.png",
     "static/media/shinsetsu-text.9f84c9e4.png": "/shinsetsu/static/media/shinsetsu-text.9f84c9e4.png"
@@ -18,7 +18,7 @@
   "entrypoints": [
     "static/js/runtime-main.7d528f5f.js",
     "static/js/2.f6e2d842.chunk.js",
-    "static/css/main.178bb3a2.chunk.css",
-    "static/js/main.81ab01a7.chunk.js"
+    "static/css/main.4a545ff8.chunk.css",
+    "static/js/main.f374162e.chunk.js"
   ]
 }
