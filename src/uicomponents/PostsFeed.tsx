@@ -53,7 +53,7 @@ export const PostsFeed: React.FunctionComponent<Props> = ({
     <animated.div style={{ ...{ width: "28rem" }, ...backgroundOpacity }}>
       {displayedPosts.length > 0 ? (
         <div className="text-xl font-yogasanspro tracking-tight text-md px-1 pb-2">
-          🏔 monogatari de la Montagne Enneigée
+          🏔 monogatari de la Montagne (#chamonix)
         </div>
       ) : null}
       {displayedPosts}
