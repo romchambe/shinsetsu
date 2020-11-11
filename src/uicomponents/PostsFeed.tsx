@@ -52,7 +52,10 @@ export const PostsFeed: React.FunctionComponent<Props> = ({
   return contentsLoaded ? (
     <animated.div style={{ ...{ width: "28rem" }, ...backgroundOpacity }}>
       {displayedPosts.length > 0 ? (
-        <div className="text-xl font-yogasanspro tracking-tight text-md px-1 pb-2">
+        <div
+          className="text-xl font-yogasanspro tracking-tight text-md px-1 pb-2"
+          style={{ letterSpacing: "-0.3px" }}
+        >
           🏔 monogatari de la Montagne (#chamonix)
         </div>
       ) : null}
@@ -70,7 +73,10 @@ export const PostsFeed: React.FunctionComponent<Props> = ({
         width={32}
         timeout={5000} //3 secs
       />
-      <div className="text-center mt-6">
+      <div
+        className="text-center mt-6 text-text-md"
+        style={{ letterSpacing: "-0.3px" }}
+      >
         la nuit venue, la neige fraîche refléta les astres dans un
         silencieux scintillement
       </div>
