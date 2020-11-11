@@ -49,7 +49,7 @@ export class InstaFetcher extends Component<Props, State> {
     const posts = extractPostsData(data)
 
     this.setState({ posts, contentsLoaded: true })
-    this.context.startSession()
+    this.context.contentsCallback()
   }
 
   render(): JSX.Element {

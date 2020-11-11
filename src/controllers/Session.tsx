@@ -1,4 +1,5 @@
 import React, { Component } from "react"
+
 import { SessionContext } from "../contexts/SessionContext"
 import { Header } from "../uicomponents/Header"
 import { getVisibilityEvent } from "../utils/visibilityChange"
@@ -6,13 +7,28 @@ import { getVisibilityEvent } from "../utils/visibilityChange"
 interface SessionState {
   active: boolean
   timer: number
+  status: SESSION_STATUS
   duration: number
-  startSession: () => void
   nextSessionTime: number | null
+  startSessionTime: number | null
+  contentsLoaded: boolean
+  contentsCallback: () => void
 }
 
 const SESSION_DURATION = 180000
 const BREAK_DURATION = 1 * 60000
+
+export enum SESSION_STATUS {
+  ONGOING,
+  PAUSED,
+  WAITING_NEXT,
+  LOADING,
+}
+
+export enum LOCAL_STORAGE_KEYS {
+  SESSION_STATE = "sessionState",
+}
+
 export class Session extends Component<{}, SessionState> {
   timer: null | NodeJS.Timeout = null
 
@@ -20,10 +36,13 @@ export class Session extends Component<{}, SessionState> {
     super(props)
     this.state = {
       active: false,
+      status: SESSION_STATUS.LOADING,
       timer: 0,
       duration: SESSION_DURATION,
-      startSession: this.startSession,
       nextSessionTime: null,
+      startSessionTime: null,
+      contentsLoaded: false,
+      contentsCallback: () => this.setState({ contentsLoaded: true }),
     }
   }
 
@@ -37,117 +56,66 @@ export class Session extends Component<{}, SessionState> {
       document.addEventListener(visibilityChange, this.onVisibilityChange)
     }
 
-    const storedNextSession = window.localStorage.getItem(
-      "nextSessionTime"
-    )
+    const storedState = getStoredSessionState()
+    console.log(storedState)
 
-    const storedCurrentSession = window.localStorage.getItem(
-      "currentSessionTime"
-    )
+    if (storedState) {
+      if (
+        storedState.active === undefined ||
+        storedState.active === null
+      ) {
+        const nextState = {
+          active: true,
+          status: SESSION_STATUS.ONGOING,
+        }
 
-    this.handleSessionState(storedNextSession, storedCurrentSession)
+        storeState(nextState)
+        this.setState(nextState)
+      }
+
+      switch (storedState.status) {
+      }
+    }
+
+    if (!storedState) {
+      const nextState = { active: true, status: SESSION_STATUS.ONGOING }
+
+      storeState(nextState)
+      this.setState(nextState)
+    }
   }
 
   startSession: () => void = () => {
-    const currentTime = Date.now()
-    const storedCurrentSession = window.localStorage.getItem(
-      "currentSessionTime"
-    )
+    const startSessionTime = Date.now()
 
-    if (!!storedCurrentSession) {
-      const currentSessionTime = Number.parseInt(storedCurrentSession)
+    this.setState({
+      startSessionTime,
+      active: true,
+      status: SESSION_STATUS.ONGOING,
+    })
 
-      if (
-        currentTime >=
-        currentSessionTime + SESSION_DURATION + BREAK_DURATION
-      ) {
-        this.startTimer()
-        window.localStorage.setItem(
-          "currentSessionTime",
-          currentTime.toString()
-        )
-      }
-
-      if (currentTime <= currentSessionTime + SESSION_DURATION) {
-        this.startTimer()
-      }
-    } else {
-      this.startTimer()
-      window.localStorage.setItem(
-        "currentSessionTime",
-        currentTime.toString()
-      )
-    }
+    storeState({
+      startSessionTime,
+      active: true,
+      status: SESSION_STATUS.ONGOING,
+    })
   }
 
   endSession: () => void = () => {
     this.stopTimer()
     const nextSessionTime = Date.now() + BREAK_DURATION
 
-    window.localStorage.setItem(
-      "nextSessionTime",
-      nextSessionTime.toString()
-    )
+    this.setState({
+      nextSessionTime,
+      active: false,
+      status: SESSION_STATUS.WAITING_NEXT,
+    })
 
-    this.setState({ nextSessionTime, active: false })
-  }
-
-  handleSessionState = (
-    storedNextSession: string | null,
-    storedCurrentSession: string | null
-  ): void => {
-    const nextState: Partial<SessionState> = {
-      active: true,
-    }
-    const currentTime = Date.now()
-    console.log(
-      "NEXT SESSION",
-      storedNextSession,
-      !!storedNextSession
-        ? new Date(Number.parseInt(storedNextSession))
-        : null
-    )
-
-    console.log(
-      "CURRENT SESSION",
-      storedCurrentSession,
-      !!storedCurrentSession
-        ? new Date(Number.parseInt(storedCurrentSession))
-        : null
-    )
-
-    if (!!storedNextSession) {
-      const nextSessionTime = Number.parseInt(storedNextSession)
-      if (currentTime < nextSessionTime) {
-        nextState.active = false
-        nextState.nextSessionTime = nextSessionTime
-      }
-
-      if (!!storedCurrentSession) {
-        const currentSessionTime = Number.parseInt(storedCurrentSession)
-
-        if (
-          currentTime >= nextSessionTime &&
-          currentTime <=
-            currentSessionTime + SESSION_DURATION + BREAK_DURATION
-        ) {
-          nextState.active = false
-          nextState.nextSessionTime =
-            currentSessionTime + SESSION_DURATION + BREAK_DURATION
-        }
-      }
-    }
-
-    if (!!storedCurrentSession) {
-      const currentSessionTime = Number.parseInt(storedCurrentSession)
-
-      if (currentTime < currentSessionTime + SESSION_DURATION) {
-        nextState.timer =
-          Math.round((currentTime - currentSessionTime) / 1000) * 1000
-      }
-    }
-
-    this.setState((prevState) => ({ ...prevState, ...nextState }))
+    storeState({
+      nextSessionTime,
+      active: false,
+      status: SESSION_STATUS.WAITING_NEXT,
+    })
   }
 
   startTimer: () => void = () => {
@@ -165,24 +133,36 @@ export class Session extends Component<{}, SessionState> {
     this.setState((prevState) => {
       if (prevState.timer + 1000 > prevState.duration) {
         this.endSession()
-        return { active: false, timer: prevState.timer }
+        storeState({ active: false, timer: 0 })
+        return { active: false, timer: 0 }
       }
 
+      storeState({ active: true, timer: prevState.timer + 1000 })
       return { active: true, timer: prevState.timer + 1000 }
     })
   }
 
   onVisibilityChange: (event: Event) => void = (event) => {
     console.log("EVENT", event)
+
     if (document.visibilityState === "hidden" && this.timer) {
       this.stopTimer()
+      this.setState({ status: SESSION_STATUS.PAUSED })
+      storeState({ status: SESSION_STATUS.PAUSED })
     }
+
     if (document.visibilityState === "visible" && !this.timer) {
       this.startTimer()
+      this.setState({ status: SESSION_STATUS.ONGOING })
+      storeState({ status: SESSION_STATUS.ONGOING })
     }
   }
 
   render(): JSX.Element {
+    if (this.state.contentsLoaded && !this.timer) {
+      this.startTimer()
+    }
+
     return (
       <SessionContext.Provider value={this.state}>
         {this.state.active ? (
@@ -199,4 +179,26 @@ export class Session extends Component<{}, SessionState> {
       </SessionContext.Provider>
     )
   }
+}
+
+function getStoredSessionState(): SessionState | null {
+  const storedState = window.localStorage.getItem(
+    LOCAL_STORAGE_KEYS.SESSION_STATE
+  )
+
+  if (!!storedState) {
+    return JSON.parse(storedState) as SessionState
+  }
+
+  return null
+}
+
+function storeState(state: Partial<SessionState>) {
+  const prevState = getStoredSessionState()
+  const nextState = !!prevState ? { ...prevState, ...state } : state
+
+  window.localStorage.setItem(
+    LOCAL_STORAGE_KEYS.SESSION_STATE,
+    JSON.stringify(nextState)
+  )
 }
