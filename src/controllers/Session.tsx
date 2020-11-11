@@ -17,8 +17,8 @@ interface SessionState {
   contentsCallback: () => void
 }
 
-const SESSION_DURATION = 30000
-const BREAK_DURATION = 5 * 60000
+const SESSION_DURATION = 180000
+const BREAK_DURATION = 10 * 60000
 
 export enum SESSION_STATUS {
   ONGOING,
