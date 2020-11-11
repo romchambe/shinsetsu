@@ -7,6 +7,7 @@ import { getVisibilityEvent } from "../utils/visibilityChange"
 interface SessionState {
   active: boolean
   timer: number
+  nextTimer: number
   status: SESSION_STATUS
   duration: number
   nextSessionTime: number | null
@@ -38,6 +39,7 @@ export class Session extends Component<{}, SessionState> {
       active: false,
       status: SESSION_STATUS.LOADING,
       timer: 0,
+      nextTimer: 0,
       duration: SESSION_DURATION,
       nextSessionTime: null,
       startSessionTime: null,
@@ -148,12 +150,14 @@ export class Session extends Component<{}, SessionState> {
 
   stopTimer: () => void = () => {
     if (!!this.timer) {
+      console.log("clear")
       clearInterval(this.timer)
     }
     this.timer = null
   }
 
   updateTime: () => void = () => {
+    console.log("TIMER", this.state.timer, this.timer)
     if (this.state.timer + 1000 >= SESSION_DURATION) {
       this.endSession()
     } else {
@@ -162,23 +166,51 @@ export class Session extends Component<{}, SessionState> {
   }
 
   onVisibilityChange: (event: Event) => void = (event) => {
-    // if (document.visibilityState === "hidden" && this.timer) {
-    //   console.log("SHOULD PAUSE", event)
-    //   this.stopTimer()
-    //   this.persistState({ status: SESSION_STATUS.PAUSED })
-    // }
-    // if (document.visibilityState === "visible" && !this.timer) {
-    //   console.log("SHOULD RESTART", event)
-    //   this.startTimer()
-    //   this.persistState({
-    //     status: SESSION_STATUS.ONGOING,
-    //     startSessionTime: Date.now() - this.state.timer,
-    //   })
-    // }
+    if (
+      document.visibilityState === "hidden" &&
+      this.state.status === SESSION_STATUS.ONGOING
+    ) {
+      console.log("SHOULD PAUSE", event)
+      if (this.timer) {
+        this.stopTimer()
+      }
+      this.persistState({ status: SESSION_STATUS.PAUSED })
+    }
+    if (
+      document.visibilityState === "visible" &&
+      this.state.status !== SESSION_STATUS.WAITING_NEXT
+    ) {
+      console.log("SHOULD RESTART", event)
+      if (!this.timer) {
+        this.startTimer()
+      }
+      this.persistState({
+        status: SESSION_STATUS.ONGOING,
+        startSessionTime: Date.now() - this.state.timer,
+      })
+    }
+  }
+
+  componentWillUnmount(): void {
+    const { visibilityChange } = getVisibilityEvent()
+
+    if (
+      !!visibilityChange &&
+      typeof document.addEventListener !== "undefined"
+    ) {
+      document.removeEventListener(
+        visibilityChange,
+        this.onVisibilityChange
+      )
+    }
   }
 
   render(): JSX.Element {
-    if (this.state.contentsLoaded && !this.timer) {
+    if (
+      this.state.status === SESSION_STATUS.ONGOING &&
+      this.state.contentsLoaded &&
+      !this.timer
+    ) {
       this.startTimer()
     }
 
