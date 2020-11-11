@@ -15,7 +15,7 @@ interface SessionState {
   contentsCallback: () => void
 }
 
-const SESSION_DURATION = 180000
+const SESSION_DURATION = 60000
 const BREAK_DURATION = 1 * 60000
 
 export enum SESSION_STATUS {
@@ -42,7 +42,11 @@ export class Session extends Component<{}, SessionState> {
       nextSessionTime: null,
       startSessionTime: null,
       contentsLoaded: false,
-      contentsCallback: () => this.setState({ contentsLoaded: true }),
+      contentsCallback: () =>
+        this.setState({
+          contentsLoaded: true,
+          status: SESSION_STATUS.ONGOING,
+        }),
     }
   }
 
@@ -57,44 +61,67 @@ export class Session extends Component<{}, SessionState> {
     }
 
     const storedState = getStoredSessionState()
-    console.log(storedState)
+    console.log("STORED", storedState)
 
     if (storedState) {
       if (
         storedState.active === undefined ||
         storedState.active === null
       ) {
-        const nextState = {
+        this.persistState({
+          startSessionTime: Date.now(),
+          nextSessionTime: null,
           active: true,
-          status: SESSION_STATUS.ONGOING,
-        }
-
-        storeState(nextState)
-        this.setState(nextState)
+          status: SESSION_STATUS.LOADING,
+        })
       }
 
       switch (storedState.status) {
+        case SESSION_STATUS.PAUSED:
+        case SESSION_STATUS.ONGOING:
+        case SESSION_STATUS.LOADING:
+          this.persistState({
+            startSessionTime: Date.now() - storedState.timer,
+            nextSessionTime: null,
+            timer: storedState.timer,
+            active: true,
+            status: SESSION_STATUS.LOADING,
+          })
+          break
+
+        case SESSION_STATUS.WAITING_NEXT:
+          if (
+            !storedState.nextSessionTime ||
+            (storedState.nextSessionTime &&
+              Date.now() > storedState.nextSessionTime)
+          ) {
+            this.persistState({
+              startSessionTime: Date.now(),
+              nextSessionTime: null,
+              timer: 0,
+              active: true,
+              status: SESSION_STATUS.LOADING,
+            })
+          }
+
+          break
       }
     }
 
     if (!storedState) {
-      const nextState = { active: true, status: SESSION_STATUS.ONGOING }
-
-      storeState(nextState)
-      this.setState(nextState)
+      this.persistState({ active: true, status: SESSION_STATUS.ONGOING })
     }
+  }
+
+  persistState = (nextState: Partial<SessionState>): void => {
+    storeState(nextState)
+    this.setState((prevState) => ({ ...prevState, ...nextState }))
   }
 
   startSession: () => void = () => {
     const startSessionTime = Date.now()
 
-    this.setState({
-      startSessionTime,
-      active: true,
-      status: SESSION_STATUS.ONGOING,
-    })
-
-    storeState({
+    this.persistState({
       startSessionTime,
       active: true,
       status: SESSION_STATUS.ONGOING,
@@ -105,21 +132,18 @@ export class Session extends Component<{}, SessionState> {
     this.stopTimer()
     const nextSessionTime = Date.now() + BREAK_DURATION
 
-    this.setState({
+    this.persistState({
       nextSessionTime,
       active: false,
-      status: SESSION_STATUS.WAITING_NEXT,
-    })
-
-    storeState({
-      nextSessionTime,
-      active: false,
+      timer: 0,
       status: SESSION_STATUS.WAITING_NEXT,
     })
   }
 
   startTimer: () => void = () => {
-    this.timer = setInterval(this.updateTime, 1000)
+    if (this.state.status !== SESSION_STATUS.WAITING_NEXT) {
+      this.timer = setInterval(this.updateTime, 1000)
+    }
   }
 
   stopTimer: () => void = () => {
@@ -130,32 +154,27 @@ export class Session extends Component<{}, SessionState> {
   }
 
   updateTime: () => void = () => {
-    this.setState((prevState) => {
-      if (prevState.timer + 1000 > prevState.duration) {
-        this.endSession()
-        storeState({ active: false, timer: 0 })
-        return { active: false, timer: 0 }
-      }
-
-      storeState({ active: true, timer: prevState.timer + 1000 })
-      return { active: true, timer: prevState.timer + 1000 }
-    })
+    if (this.state.timer + 1000 >= SESSION_DURATION) {
+      this.endSession()
+    } else {
+      this.persistState({ active: true, timer: this.state.timer + 1000 })
+    }
   }
 
   onVisibilityChange: (event: Event) => void = (event) => {
-    console.log("EVENT", event)
-
-    if (document.visibilityState === "hidden" && this.timer) {
-      this.stopTimer()
-      this.setState({ status: SESSION_STATUS.PAUSED })
-      storeState({ status: SESSION_STATUS.PAUSED })
-    }
-
-    if (document.visibilityState === "visible" && !this.timer) {
-      this.startTimer()
-      this.setState({ status: SESSION_STATUS.ONGOING })
-      storeState({ status: SESSION_STATUS.ONGOING })
-    }
+    // if (document.visibilityState === "hidden" && this.timer) {
+    //   console.log("SHOULD PAUSE", event)
+    //   this.stopTimer()
+    //   this.persistState({ status: SESSION_STATUS.PAUSED })
+    // }
+    // if (document.visibilityState === "visible" && !this.timer) {
+    //   console.log("SHOULD RESTART", event)
+    //   this.startTimer()
+    //   this.persistState({
+    //     status: SESSION_STATUS.ONGOING,
+    //     startSessionTime: Date.now() - this.state.timer,
+    //   })
+    // }
   }
 
   render(): JSX.Element {

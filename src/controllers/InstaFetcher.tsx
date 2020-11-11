@@ -40,7 +40,7 @@ export class InstaFetcher extends Component<Props, State> {
   }
 
   async componentDidMount(): Promise<void> {
-    console.log(this.context)
+    console.log("INSTA CONTEXT", this.context)
     const instaHtml = await miniget(
       `https://instagram.com/explore/tags/${this.props.hashtag}/`
     ).text()

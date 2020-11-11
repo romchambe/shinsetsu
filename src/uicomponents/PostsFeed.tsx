@@ -49,7 +49,6 @@ export const PostsFeed: React.FunctionComponent<Props> = ({
     loadBatch(displayedPosts.length + postBatch)
   }
 
-  console.log("RENDER FEED", backgroundOpacity)
   return contentsLoaded ? (
     <animated.div style={{ ...{ width: "28rem" }, ...backgroundOpacity }}>
       {displayedPosts.length > 0 ? (
