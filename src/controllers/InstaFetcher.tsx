@@ -30,6 +30,7 @@ export interface Post {
 
 export class InstaFetcher extends Component<Props, State> {
   static contextType = SessionContext
+
   constructor(props: Props) {
     super(props)
     this.state = {
@@ -39,7 +40,7 @@ export class InstaFetcher extends Component<Props, State> {
   }
 
   async componentDidMount(): Promise<void> {
-    console.log(this.context)
+    console.log("INSTA CONTEXT", this.context)
     const instaHtml = await miniget(
       `https://instagram.com/explore/tags/${this.props.hashtag}/`
     ).text()
@@ -48,7 +49,7 @@ export class InstaFetcher extends Component<Props, State> {
     const posts = extractPostsData(data)
 
     this.setState({ posts, contentsLoaded: true })
-    this.context.startTimer()
+    this.context.contentsCallback()
   }
 
   render(): JSX.Element {

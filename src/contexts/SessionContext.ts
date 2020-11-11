@@ -1,10 +1,11 @@
 import React from "react"
+import { SESSION_STATUS } from "../controllers/Session"
 
 export const SessionContext = React.createContext({
-  active: true,
+  active: false,
+  status: SESSION_STATUS.LOADING,
   timer: 0,
   duration: 180000,
-  startTimer: () => {
-    console.log("")
-  },
+  contentsLoaded: false,
+  contentsCallback: () => console.log(""),
 })
