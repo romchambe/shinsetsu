@@ -2,6 +2,7 @@ import React, { Component } from "react"
 
 import { SessionContext } from "../contexts/SessionContext"
 import { Header } from "../uicomponents/Header"
+import { Timer } from "../uicomponents/Timer"
 import { getVisibilityEvent } from "../utils/visibilityChange"
 
 interface SessionState {
@@ -16,8 +17,8 @@ interface SessionState {
   contentsCallback: () => void
 }
 
-const SESSION_DURATION = 60000
-const BREAK_DURATION = 1 * 60000
+const SESSION_DURATION = 30000
+const BREAK_DURATION = 5 * 60000
 
 export enum SESSION_STATUS {
   ONGOING,
@@ -32,6 +33,7 @@ export enum LOCAL_STORAGE_KEYS {
 
 export class Session extends Component<{}, SessionState> {
   timer: null | NodeJS.Timeout = null
+  nextTimer: null | NodeJS.Timeout = null
 
   constructor(props: {}) {
     super(props)
@@ -104,6 +106,8 @@ export class Session extends Component<{}, SessionState> {
               active: true,
               status: SESSION_STATUS.LOADING,
             })
+          } else {
+            this.persistState(storedState)
           }
 
           break
@@ -121,6 +125,7 @@ export class Session extends Component<{}, SessionState> {
   }
 
   startSession: () => void = () => {
+    this.stopNextTimer()
     const startSessionTime = Date.now()
 
     this.persistState({
@@ -156,12 +161,48 @@ export class Session extends Component<{}, SessionState> {
     this.timer = null
   }
 
+  startNextTimer: () => void = () => {
+    console.log("starting next 2")
+    if (this.state.status === SESSION_STATUS.WAITING_NEXT) {
+      console.log("starting next")
+      this.nextTimer = setInterval(this.updateNextTime, 1000)
+    }
+  }
+
+  stopNextTimer: () => void = () => {
+    if (!!this.nextTimer) {
+      console.log("clear")
+      clearInterval(this.nextTimer)
+    }
+    this.nextTimer = null
+  }
+
   updateTime: () => void = () => {
     console.log("TIMER", this.state.timer, this.timer)
     if (this.state.timer + 1000 >= SESSION_DURATION) {
       this.endSession()
     } else {
       this.persistState({ active: true, timer: this.state.timer + 1000 })
+    }
+  }
+
+  updateNextTime: () => void = () => {
+    console.log(
+      "NEXT TIMER",
+      this.state.nextTimer,
+      this.state.nextSessionTime
+        ? this.state.nextSessionTime - Date.now()
+        : null
+    )
+    if (this.state.nextSessionTime) {
+      if (Date.now() >= this.state.nextSessionTime) {
+        this.startSession()
+      } else {
+        this.persistState({
+          active: false,
+          nextTimer: this.state.nextSessionTime - Date.now(),
+        })
+      }
     }
   }
 
@@ -203,6 +244,13 @@ export class Session extends Component<{}, SessionState> {
         this.onVisibilityChange
       )
     }
+
+    if (this.timer) {
+      clearInterval(this.timer)
+    }
+    if (this.nextTimer) {
+      clearInterval(this.nextTimer)
+    }
   }
 
   render(): JSX.Element {
@@ -214,17 +262,33 @@ export class Session extends Component<{}, SessionState> {
       this.startTimer()
     }
 
+    if (
+      this.state.status === SESSION_STATUS.WAITING_NEXT &&
+      !this.nextTimer
+    ) {
+      console.log("starting next 3")
+      this.startNextTimer()
+    }
+
     return (
       <SessionContext.Provider value={this.state}>
         {this.state.active ? (
           this.props.children
         ) : (
-          <div className="flex flex-col items-center w-full">
+          <div
+            className="flex flex-col items-center w-full"
+            style={{
+              background: `linear-gradient(90deg, #efebfa, transparent)`,
+            }}
+          >
             <Header contentScrolled={false} contentsLoaded={false} />
-            <div className="mt-6">
-              un peu de patience pendant que la neige fraîche
-              s&apos;accumule
+            <div className="mt-6 mb-2 text-black">
+              une petite pause avant de continuer ;)
             </div>
+            <div className="mb-6 text-text-lt">
+              il sera bientôt temps de contempler les montagnes à nouveau
+            </div>
+            <Timer value={this.state.nextTimer} />
           </div>
         )}
       </SessionContext.Provider>
