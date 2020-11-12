@@ -50,7 +50,10 @@ export const PostsFeed: React.FunctionComponent<Props> = ({
   }
 
   return contentsLoaded ? (
-    <animated.div style={{ ...{ width: "28rem" }, ...backgroundOpacity }}>
+    <animated.div
+      className="w-5/6 md:w-1/2 lg:w-1/3"
+      style={backgroundOpacity}
+    >
       {displayedPosts.length > 0 ? (
         <div
           className="text-xl font-yogasanspro tracking-tight text-md px-1 pb-2"
@@ -59,13 +62,11 @@ export const PostsFeed: React.FunctionComponent<Props> = ({
           🏔 monogatari de la Montagne (#chamonix)
         </div>
       ) : null}
+
       {displayedPosts}
     </animated.div>
   ) : (
-    <animated.div
-      className="flex flex-col items-center"
-      style={{ width: "28rem" }}
-    >
+    <animated.div className="flex flex-col items-center w-64">
       <Loader
         type="Audio"
         color="#9a82e6"

@@ -11,8 +11,6 @@ export const Picture: React.FunctionComponent<Post> = (props) => {
         src={props.images.src}
         alt={props.description}
         style={{
-          width: "28rem",
-          height: "28rem",
           objectFit: "contain",
         }}
       />

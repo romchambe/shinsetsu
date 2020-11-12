@@ -2,8 +2,10 @@ import React, { Component } from "react"
 import { Spring } from "react-spring/renderprops"
 import { ScrollContext } from "../contexts/ScrollContext"
 import Loader from "react-loader-spinner"
+import { Hero } from "../uicomponents/Hero"
 interface Props {
   setContentScrolled: React.Dispatch<React.SetStateAction<boolean>>
+  contentsLoaded: boolean
 }
 
 interface State {
@@ -84,6 +86,8 @@ export class ScrollController extends Component<Props, State> {
   render(): JSX.Element {
     return (
       <ScrollContext.Provider value={this.state}>
+        <Hero contentsLoaded={this.props.contentsLoaded} />
+
         <Spring
           from={{ transform: "translate(0px, 0px)" }}
           to={{
