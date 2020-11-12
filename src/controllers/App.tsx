@@ -21,7 +21,10 @@ const App: React.FunctionComponent<{}> = () => {
                 contentScrolled={contentScrolled}
                 contentsLoaded={contentsLoaded}
               />
-              <ScrollController setContentScrolled={setContentScrolled}>
+              <ScrollController
+                setContentScrolled={setContentScrolled}
+                contentsLoaded={contentsLoaded}
+              >
                 <PostsFeed posts={posts} contentsLoaded={contentsLoaded} />
               </ScrollController>
             </DaylightBackground>

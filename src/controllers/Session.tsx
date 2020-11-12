@@ -276,25 +276,27 @@ export class Session extends Component<{}, SessionState> {
           this.props.children
         ) : (
           <div
-            className="flex flex-col items-center w-full"
+            className="flex-1 flex-col items-center justify-center"
             style={{
               background: `linear-gradient(90deg, #efebfa, transparent)`,
             }}
           >
             <Header contentScrolled={false} contentsLoaded={false} />
-            <div
-              className="mt-6 mb-2 text-black"
-              style={{ letterSpacing: "-0.3px" }}
-            >
-              une petite pause avant de continuer ;)
+            <div className="flex flex-col items-center w-full">
+              <div
+                className="mt-6 mb-2 text-black max-w-xs md:max-w-md text-center"
+                style={{ letterSpacing: "-0.3px" }}
+              >
+                une petite pause avant de continuer ;)
+              </div>
+              <div
+                className="mb-6 text-text-lt max-w-xs md:max-w-md text-center"
+                style={{ letterSpacing: "-0.3px" }}
+              >
+                il sera bientôt temps de contempler les montagnes à nouveau
+              </div>
+              <Timer value={this.state.nextTimer} />
             </div>
-            <div
-              className="mb-6 text-text-lt"
-              style={{ letterSpacing: "-0.3px" }}
-            >
-              il sera bientôt temps de contempler les montagnes à nouveau
-            </div>
-            <Timer value={this.state.nextTimer} />
           </div>
         )}
       </SessionContext.Provider>
