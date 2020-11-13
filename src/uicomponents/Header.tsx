@@ -44,12 +44,17 @@ export const Header: React.FunctionComponent<Props> = (props) => {
   return (
     <animated.div
       className="flex flex-col w-full py-6 items-center"
-      style={{ transform: translateY }}
+      style={{ transform: translateY, WebkitTransform: translateY }}
     >
       <animated.img
         src={square}
         alt="shinsetsu logo"
-        style={{ width: 48, transform: translateLogo }}
+        style={{
+          width: 48,
+          height: 48,
+          transform: translateLogo,
+          WebkitTransform: translateLogo,
+        }}
       />
       <animated.img
         alt="shinsetsu"
@@ -60,7 +65,13 @@ export const Header: React.FunctionComponent<Props> = (props) => {
 
       <animated.div
         className="mt-6"
-        style={{ ...{ transform: translateTimer }, ...timerOpacity }}
+        style={{
+          ...{
+            transform: translateTimer,
+            WebkitTransform: translateTimer,
+          },
+          ...timerOpacity,
+        }}
       >
         <Timer value={timer} />
       </animated.div>

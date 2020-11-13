@@ -3,7 +3,7 @@ import { Post } from "../controllers/InstaFetcher"
 
 export const Picture: React.FunctionComponent<Post> = (props) => {
   return (
-    <div className="block mb-4 rounded bg-white border border-yellow-border">
+    <div className="block mb-4 rounded bg-white lg:border lg:border-yellow-border">
       <div className="font-yogasanspro py-4 px-3  font-bold text-black">
         {getRelativeTime(props.timestamp)}
       </div>

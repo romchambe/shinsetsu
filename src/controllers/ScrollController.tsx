@@ -91,7 +91,9 @@ export class ScrollController extends Component<Props, State> {
         </div>
 
         <Spring
-          from={{ transform: "translate(0px, 0px)" }}
+          from={{
+            transform: "translate(0px, 0px)",
+          }}
           to={{
             transform: `translate(0px, ${
               this.state.scrolling ? -104 : 0
@@ -105,7 +107,13 @@ export class ScrollController extends Component<Props, State> {
               ref={(scrollContainer) =>
                 (this.scrollContainer = scrollContainer)
               }
-              style={{ ...props, ...{ marginBottom: -104 } }}
+              style={{
+                ...props,
+                ...{
+                  marginBottom: -104,
+                  WebkitTransform: props.transform,
+                },
+              }}
             >
               {this.props.children}
               {this.state.reloadAnim ? (

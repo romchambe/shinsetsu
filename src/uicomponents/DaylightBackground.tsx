@@ -41,7 +41,7 @@ export const DaylightBackground: React.FunctionComponent<{
   const gradient = {
     background: `linear-gradient(${
       270 - 180 * progress.getValue()
-    }deg, ${gradientColor.getValue()}, transparent)`,
+    }deg, ${gradientColor.getValue()}, #FFF)`,
   }
 
   return (
