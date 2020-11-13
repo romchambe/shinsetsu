@@ -86,7 +86,9 @@ export class ScrollController extends Component<Props, State> {
   render(): JSX.Element {
     return (
       <ScrollContext.Provider value={this.state}>
-        <Hero contentsLoaded={this.props.contentsLoaded} />
+        <div className="hidden lg:block">
+          <Hero contentsLoaded={this.props.contentsLoaded} />
+        </div>
 
         <Spring
           from={{ transform: "translate(0px, 0px)" }}
