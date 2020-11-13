@@ -14,19 +14,16 @@ export const Hero = (props: { contentsLoaded: boolean }): JSX.Element => {
   console.log("TOP", top.getValue(), scrolling)
   return (
     <animated.div
-      className="absolute max-w-xs text-center lg:text-left left-0 ml-8  z-10"
-      style={{ top, opacity }}
+      className="lg:absolute lg:max-w-xs lg:left-0 lg:text-left lg:ml-8 lg:z-10 lg:mb-0 lg:p-0 lg:block lg:bg-transparent p-3 flex flex-col items-center bg-white rounded-sm mb-8 text-center"
+      style={window.innerWidth > 1024 ? { top, opacity } : {}}
     >
-      <div
-        className="text-black font-yogasanspro font-bold flex-wrap text-xl"
-        style={{ letterSpacing: "-0.1px" }}
-      >
+      <div className="text-black font-yogasanspro font-bold flex-wrap text-xl">
         shinsetsu présente les derniers posts sur le hashtag chamonix
       </div>
       <div className="text-text-lt flex-wrap mt-6">
         shinsetsu signifie la neige fraîche en japonais
       </div>
-      <div className="text-text-lt flex-wrap mt-1">
+      <div className="text-text-lt flex-wrap ">
         c&apos;est un projet de démo en react et typescript
       </div>
     </animated.div>

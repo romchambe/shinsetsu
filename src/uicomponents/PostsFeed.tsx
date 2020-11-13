@@ -4,6 +4,7 @@ import { ScrollContext } from "../contexts/ScrollContext"
 import { Post } from "../controllers/InstaFetcher"
 import { Picture } from "./Picture"
 import Loader from "react-loader-spinner"
+import { Hero } from "./Hero"
 
 const postBatch = 9
 interface Props {
@@ -54,9 +55,13 @@ export const PostsFeed: React.FunctionComponent<Props> = ({
       className="w-5/6 md:w-1/2 lg:w-1/3"
       style={backgroundOpacity}
     >
+      <div className="lg:hidden block">
+        <Hero contentsLoaded={contentsLoaded} />
+      </div>
+
       {displayedPosts.length > 0 ? (
         <div
-          className="text-xl font-yogasanspro tracking-tight text-md px-1 pb-2"
+          className="text-xl font-yogasanspro tracking-tight lg:text-left text-center text-md px-1 pb-2"
           style={{ letterSpacing: "-0.3px" }}
         >
           🏔 monogatari de la Montagne (#chamonix)
